@@ -5,7 +5,7 @@
 # DESCRIPTION: Let's recourse
 # STUDENTS I DISCUSSED THE EXERCISE WITH:
 # WEB PAGES I USED:
-# NOTES: Recursion is a must, see excercise descrioptions
+# NOTES: Recursion is a must, see excercise description
 #################################################################
 
 from typing import *
