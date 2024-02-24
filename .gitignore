@@ -1,0 +1,12 @@
+__*
+.py*
+
+*csv
+*.png
+*.jpg
+*.zip
+
+1/
+2/
+3/
+5/ex5_test.py
