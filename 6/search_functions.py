@@ -33,7 +33,7 @@ def crawl(base_url, index, out_file):
     pages. type: trafic_dic: dict[str,dict[str,int]]"""
     trafic_dic = {}
     f = open(index, "r",encoding= "utf-8")
-    page_list = (f.read()).split("\n")
+    page_list = (f.read()).split()
     f.close()
     for page in page_list:
         temp_dict = dict.fromkeys(page_list,0)
@@ -43,8 +43,7 @@ def crawl(base_url, index, out_file):
                 if links.get("href") in page_list:
                     temp_dict[links.get("href")] += 1
         trafic_dic[page] = {k: v for k, v in temp_dict.items() if v != 0}
-    if '' in trafic_dic:
-        del trafic_dic['']
+    print(trafic_dic)
     write_pickle(trafic_dic,out_file)
 
 def page_rank(iterations, dict_file, out_file):
