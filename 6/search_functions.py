@@ -32,9 +32,9 @@ def crawl(base_url, index, out_file):
     """ returns a variable denoting how many times a page was linked to other
     pages. type: trafic_dic: dict[str,dict[str,int]]"""
     trafic_dic = {}
-    f = open(index, "r",encoding= "utf-8")
-    page_list = (f.read()).split()
-    f.close()
+    file = open(index, "r",encoding= "utf-8")
+    page_list = (file.read()).split()
+    file.close()
     for page in page_list:
         temp_dict = dict.fromkeys(page_list,0)
         paragraphs = get_all_paragraphs(base_url+page)
@@ -87,9 +87,9 @@ def item_repetiition_dic(item_list):
 
 def words_dict(base_url, index, out_file):
     """used to derive a dictionary with each word an the amount it shows up in each page"""
-    f = open(index, "r",encoding= "utf-8")
-    page_list = (f.read()).split("\n")
-    f.close()
+    file = open(index, "r",encoding= "utf-8")
+    page_list = (file.read()).split("\n")
+    file.close()
     page_dic = {}
     word_dic = {}
     for page in page_list:
