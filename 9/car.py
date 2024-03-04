@@ -1,11 +1,17 @@
 from typing import Tuple, List, Dict
 
 Coordinates = Tuple[int, int]
+VERT = 0  # vertical car
+HORZ = 1  # horizontal car
+
 
 class Car:
     """
-    Cars in the popular "Rush Hour" board game.
+    A car in the popular "Rush Hour" board game. 
     """
+
+    # defining legal values for certain atributes and variables
+    __legal_orientation = (VERT,HORZ)
 
     def __init__(self, name: str, length: int, location: Coordinates, 
                  orientation: int) -> None:
@@ -16,34 +22,41 @@ class Car:
         :param location: A tuple representing the car's head location (row,col).
         :param orientation: One of either 0 (VERTICAL) or 1 (HORIZONTAL).
         """
-        # Note that this function is required in your Car implementation.
-        # implement your code and erase the "pass"
-        pass
+        self.__name = name
+        self.__length = length
+        if orientation in self.__legal_orientation:
+            self.__orientation = orientation
+        else:
+            raise ValueError("illegal orientaion value")
+        self.__location = location
 
     def car_coordinates(self) -> List[Coordinates]:
         """
         :return: A list of coordinates the car is in.
         """
-        # implement your code and erase the "pass"
-        pass
+        coordinate_list = []
+        if self.__orientation == VERT:
+            for index in range(self.__length):
+                coordinate_list.append((self.__location[0] + index, self.__location[1]))
+        elif self.__orientation == HORZ:
+            for index in range(self.__length):
+                coordinate_list.append((self.__location[0] ,self.__location[1] + index))
+        else:
+            raise AttributeError("improper orientation attribute")
+        return coordinate_list  
 
     def possible_moves(self) -> Dict[str, str]:
         """
         :return: A dictionary of strings describing possible movements 
                  permitted by this car.
         """
-        # For this car type, keys are from 'udrl'
-        # The keys for vertical cars are 'u' and 'd'.
-        # The keys for horizontal cars are 'l' and 'r'.
-        # You may choose appropriate strings to describe each movements.
-        # For example: a car that supports the commands 'f', 'd', 'a' may return
-        # the following dictionary:
-        # {'f': "cause the car to fly and reach the Moon",
-        #  'd': "cause the car to dig and reach the core of Earth",
-        #  'a': "another unknown action"}
-        #
-        # implement your code and erase the "pass"
-        pass
+        if self.__orientation == HORZ:
+            return {"l": "moves the car one unit to the left",
+                    "r": "moves the car one unit to the right"}
+        if self.__orientation == VERT:
+            return {"u": "moves the car one unit 'up'",
+                    "d": "moves the car one unit 'down'"}
+        raise AttributeError("improper orientation")
 
     def movement_requirements(self, move_key: str) -> List[Coordinates]:
         """ 
@@ -51,10 +64,18 @@ class Car:
         :return: A list of cell locations which must be empty in order for 
                  this move to be legal.
         """
-        # For example, a car in locations [(1,2),(2,2)] requires [(3,2)] to
-        # be empty in order to move down (with a key 'd').
-        # implement your code and erase the "pass"
-        pass
+        cell_list =[]
+        if move_key not in self.possible_moves():
+            raise ValueError("This move is not possible, it is not in the possible moves dictionary")
+        if move_key == "u":
+            cell_list.append((self.__location[0] - 1, self.__location[1]))
+        elif move_key == "d":
+            cell_list.append((self.__location[0] + self.__length + 1, self.__location[1]))
+        elif move_key == "r":
+            cell_list.append((self.__location[0], self.__location[1] + self.__length + 1))
+        elif move_key == "l":
+            cell_list.append((self.__location[0], self.__location[1] - 1))
+        return cell_list
 
     def move(self, move_key: str) -> bool:
         """ 
@@ -62,12 +83,20 @@ class Car:
         :param move_key: A string representing the key of the required move.
         :return: True upon success, False otherwise
         """
-        # implement your code and erase the "pass"
-        pass
+        if move_key not in self.possible_moves():
+            raise ValueError("This move is not possible, it is not in the possible moves dictionary")
+        if move_key == "u":
+            self.__location = (self.__location[0] - 1, self.__location[1])
+        elif move_key == "d":
+            self.__location = (self.__location[0] + 1, self.__location[1])
+        elif move_key == "r":
+            self.__location = (self.__location[0], self.__location[1] + 1)
+        elif move_key == "l":
+            self.__location = (self.__location[0], self.__location[1] - 1)
+        return True
 
     def get_name(self) -> str:
         """
         :return: The name of this car.
         """
-        # implement your code and erase the "pass"
-        pass
+        return self.__name

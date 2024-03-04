@@ -1,9 +1,13 @@
 from board import Board
 
+EXIT_KEY = "!"
+CAR_LENGTHS = (2,3,4)
+CAR_NAMES = ('Y','B','O','W','G','R')
+DIRECTIONS = ('u','d','l','r')
+
 class Game:
     """
-    Add a class description here.
-    Write briefly about the purpose of the class.
+    The game of "Rush Hour".
     """
 
     def __init__(self, board: Board) -> None:
@@ -11,9 +15,33 @@ class Game:
         Initialize a new Game object.
         :param board: An object of type board
         """
-        # You may assume board follows the API
-        # implement your code and erase the "pass"
-        pass
+        self.__board = board
+
+    def __get_user_move(self) -> tuple[str,str]:
+        """
+        Gets a users desired move and returns it a tuple of car and direction
+        """
+        split_user_input = input(
+            "Which car do you want to move?\n" +
+            "Write in NAME DIRECTION format\n" +
+            f"name can only be {CAR_NAMES}\n" +
+            f"direction can only be {DIRECTIONS}\n").split()
+        if len(split_user_input) == 2:
+            arg1, arg2 = split_user_input
+        else:
+            arg1, arg2 =  " ", " "
+        while not (arg1 in CAR_NAMES and arg2 in DIRECTIONS):
+            split_user_input = input("The input was improper, retry:  ").split()
+            if len(split_user_input) == 2:
+                arg1,arg2 = split_user_input
+        return (arg1,arg2)
+
+    def __check_valid_move(self, move: tuple[str,str]) -> bool:
+        """
+        ensures that a desired move is possible
+        """
+        return move in self.__board.possible_moves
+
 
     def __single_turn(self):
         """
@@ -44,8 +72,4 @@ class Game:
 
 
 if __name__== "__main__":
-    # Your code here
-    # All access to files, non API constructors, and such must be in this
-    # section, or in functions called from this section.
-    # implement your code and erase the "pass"
     pass

@@ -2,40 +2,57 @@ from typing import Tuple, List, Optional
 from car import Car
 
 Coordinates = Tuple[int, int]
+EMPTY = "_"
+WIDTH = 7
+HEIGHT = 7
+BUFFER = "*"
+TARGET = "E"
+
 
 class Board:
     """
-    Add a class description here.
-    Write briefly about the purpose of the class.
+    A class responsible for raising rhe framework of the game
     """
 
     def __init__(self) -> None:
         """
         A constructor for a Board object.
         """
-        # Note that this function is required in your Board implementation.
-        # implement your code and erase the "pass"
-        pass
+        self.__grid = [[0] * WIDTH] * HEIGHT
+        self.__cars = []
 
     def __str__(self) -> str:
         """
         This function is called when a board object is to be printed.
         :return: A string representing the current status of the board.
         """
-        # The game may assume this function returns a reasonable representation
-        # of the board for printing, but may not assume details about it.
-        # implement your code and erase the "pass"
-        pass
+        printable = ""
+        for row in range(HEIGHT):
+            if row != 0:
+                printable += "\n"
+            for collumn in range(WIDTH):
+                if collumn != 0:
+                    printable += " "
+                if self.__grid[row][collumn] == 0:
+                    printable += "_"
+                else:
+                    printable += self.__grid[row][collumn]
+            if row == int((HEIGHT-1)/2):
+                printable += TARGET
+            else:
+                printable += BUFFER
+        return printable
 
     def cell_list(self) -> List[Coordinates]:
         """
         This function returns the coordinates of cells in this board.
         :return: list of coordinates.
         """
-        # In this board, returns a list containing the cells in the square
-        # from (0,0) to (6,6) and the target cell (3,7)
-        # implement your code and erase the "pass"
-        pass
+        coord_list = [(WIDTH,int((HEIGHT-1)/2))]
+        for i in range(HEIGHT):
+            for j in range(WIDTH):
+                coord_list.append((i,j))
+        return coord_list
 
     def possible_moves(self) -> List[Tuple[str, str, str]]:
         """ 
@@ -44,9 +61,9 @@ class Board:
                  representing legal moves. The description should briefly
                  explain what is the movement represented by move_key.
         """
-        # From the provided example car_config.json file, the return value could be
-        # [('O','d',"description"), ('R','r',"description"), ('O','u',"description")]
-        # implement your code and erase the "pass"
+        move_list = []
+        for car in self.__cars:
+            if 
         pass
 
     def target_location(self) -> Coordinates:
@@ -88,3 +105,7 @@ class Board:
         """
         # implement your code and erase the "pass"
         pass
+
+if __name__ == "__main__":
+    b = Board()
+    print(b)
