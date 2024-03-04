@@ -1,3 +1,15 @@
+#################################################################
+# FILE : car.py
+# WRITER : Dori_Peleg , dori.plg , 207685306
+# EXERCISE : intro2cs ex9 2024
+# DESCRIPTION: This file creates the car class for the "rush hour" game,
+#              applicapble in others as well
+# STUDENTS I DISCUSSED THE EXERCISE WITH: Hadar Soffer
+# WEB PAGES I USED:
+# NOTES: note the hiddenness of the API and the constants for each class
+#################################################################
+
+
 from typing import Tuple, List, Dict
 
 Coordinates = Tuple[int, int]

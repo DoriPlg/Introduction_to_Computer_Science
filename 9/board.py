@@ -1,13 +1,34 @@
+#################################################################
+# FILE : board.py
+# WRITER : Dori_Peleg , dori.plg , 207685306
+# EXERCISE : intro2cs ex9 2024
+# DESCRIPTION: This file creates the board class for the "rush hour" game,
+#               applicable in other applications as well
+# STUDENTS I DISCUSSED THE EXERCISE WITH: Hadar Soffer
+# WEB PAGES I USED:
+# NOTES: note the hiddenness of the API and the constants for each class
+#################################################################
+
 from typing import Tuple, List, Optional
 from car import Car
+from colorama import Back
 
 Coordinates = Tuple[int, int]
+
 EMPTY = "_"
 WIDTH = 7
 HEIGHT = 7
 BUFFER = "*"
 TARGET = "E"
 
+"""
+COLOR_DICT = {"R": Back.RED,
+              "Y": Back.YELLOW,
+              "G": Back.GREEN,
+              "O": Back.MAGENTA,
+              "W": Back.WHITE,
+              "B": Back.BLUE}
+"""
 
 class Board:
     """
@@ -41,7 +62,7 @@ class Board:
                 if grid[row][collumn] == 0:
                     printable += "_"
                 else:
-                    printable += grid[row][collumn]
+                    printable += f"{grid[row][collumn]}"
             if row == int((HEIGHT-1)/2):
                 printable += TARGET
             else:
@@ -131,6 +152,9 @@ class Board:
         :return: True upon success, False otherwise.
         """
         if name in self.__cars:
-            return self.__cars[name].move(move_key)
+            required = self.__cars[name].movement_requirements(move_key)[0]
+            if ((required[0] in range(HEIGHT) and required[1] in range(WIDTH)) or
+                (required[0] == (HEIGHT-1)/2 and required[1] == WIDTH)):
+                return self.__cars[name].move(move_key)
         return False
 

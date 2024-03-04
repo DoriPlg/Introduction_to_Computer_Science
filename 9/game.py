@@ -1,7 +1,22 @@
+#################################################################
+# FILE : game.py
+# WRITER : Dori_Peleg , dori.plg , 207685306
+# EXERCISE : intro2cs ex9 2024
+# DESCRIPTION: This file creates the game class for the "rush hour" game
+# STUDENTS I DISCUSSED THE EXERCISE WITH: Hadar Soffer
+# WEB PAGES I USED:
+# NOTES: note the hiddenness of the API and the constants for each class
+#################################################################
+
+
+import sys
 from board import Board
 from helper import load_json
 from car import Car
 
+
+DEFAULT_PATH = "/home/dori/Documents/UNI/Intro/Exercise/9/additional_files/car_config.json"
+ORIENTATION = {0,1}
 EXIT_KEY = "!"
 CAR_LENGTHS = (2,3,4)
 CAR_NAMES = ('Y','B','O','W','G','R')
@@ -29,7 +44,7 @@ class Game:
             "Write in NAME,DIRECTION format\n" +
             f"name can only be {CAR_NAMES}\n" +
             f"direction can only be {DIRECTIONS}\n").split(",")
-        if split_user_input == BREAK_CHAR:
+        if len(split_user_input) == 1 and split_user_input[0] == BREAK_CHAR:
             return split_user_input
         if len(split_user_input) == 2:
             arg1, arg2 = split_user_input
@@ -49,28 +64,6 @@ class Game:
         """
         return move in [(possible_move[0],possible_move[1]) for possible_move in self.__board.possible_moves()]
 
-
-    def __single_turn(self):
-        """
-        Note - this function is here to guide you and it is *not mandatory*
-        to implement it. 
-
-        The function runs one round of the game :
-            1. Get user's input of: what color car to move, and what 
-                direction to move it.
-            2. Check if the input is valid.
-            3. Try moving car according to user's input.
-
-        Before and after every stage of a turn, you may print additional 
-        information for the user, e.g., printing the board. In particular,
-        you may support additional features, (e.g., hints) as long as they
-        don't interfere with the API.
-        """
-        user_input = self.__get_user_move()
-        while not self.__valid_move(user_input):
-            user_input = self.__get_user_move()
-        self.__board.move_car(*user_input)
-
     def __win(self):
         """
         checks if the game has been won
@@ -86,19 +79,37 @@ class Game:
         while not self.__win():
             print(self.__board)
             user_input = self.__get_user_move()
-            if user_input == BREAK_CHAR:
+            if user_input[0] == BREAK_CHAR:
                 break
             while not self.__valid_move(user_input):
                 print("invalid move")
                 user_input = self.__get_user_move()
-            self.__board.move_car(*user_input)
-            
+            if not self.__board.move_car(*user_input):
+                print("\nIt seems you're trying to move a car out of bounds. Retry\n")
+        if self.__win():
+            print("\nGood Job!!")
 
-
-if __name__== "__main__":
-    example = load_json("car_config.json")
+def json_to_board(path):
+    """generates the board for the game from a given json"""
+    example = load_json(path)
     board = Board()
     for car in example.items():
-        board.add_car(Car(car[0],car[1][0],car[1][1],car[1][2]))
-    Game(board).play()
+        car_name = car[0]
+        car_length, car_location, car_orientation = [x for x in car[1]]
+        if (car_name in CAR_NAMES
+            and car_length in CAR_LENGTHS
+            and (car_location[0],car_location[1]) in board.cell_list()
+            and car_orientation in ORIENTATION):
+            board.add_car(Car(car_name,
+                              car_length,
+                              (car_location[0],car_location[1]),
+                              car_orientation))
+    return board
+
+if __name__== "__main__":
+    args = sys.argv
+    path = DEFAULT_PATH
+    if len(args) > 1:
+        path = args[1]
+    Game(json_to_board(path)).play()
     input("Hit Enter to continue and leave the program")
