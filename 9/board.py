@@ -74,7 +74,7 @@ class Board:
         This function returns the coordinates of cells in this board.
         :return: list of coordinates.
         """
-        coord_list = [(WIDTH,int((HEIGHT-1)/2))]
+        coord_list = [(int((HEIGHT-1)/2),WIDTH)]
         for i in range(HEIGHT):
             for j in range(WIDTH):
                 coord_list.append((i,j))
