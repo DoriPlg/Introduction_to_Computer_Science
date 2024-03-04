@@ -67,14 +67,16 @@ class Car:
         cell_list =[]
         if move_key not in self.possible_moves():
             raise ValueError("This move is not possible, it is not in the possible moves dictionary")
-        if move_key == "u":
-            cell_list.append((self.__location[0] - 1, self.__location[1]))
-        elif move_key == "d":
-            cell_list.append((self.__location[0] + self.__length + 1, self.__location[1]))
-        elif move_key == "r":
-            cell_list.append((self.__location[0], self.__location[1] + self.__length + 1))
-        elif move_key == "l":
-            cell_list.append((self.__location[0], self.__location[1] - 1))
+        if self.__orientation == VERT:
+            if move_key == "u":
+                cell_list.append((self.__location[0] - 1, self.__location[1]))
+            elif move_key == "d":
+                cell_list.append((self.__location[0] + self.__length, self.__location[1]))
+        elif self.__orientation == HORZ:
+            if move_key == "r":
+                cell_list.append((self.__location[0], self.__location[1] + self.__length))
+            elif move_key == "l":
+                cell_list.append((self.__location[0], self.__location[1] - 1))
         return cell_list
 
     def move(self, move_key: str) -> bool:
@@ -87,13 +89,17 @@ class Car:
             raise ValueError("This move is not possible, it is not in the possible moves dictionary")
         if move_key == "u":
             self.__location = (self.__location[0] - 1, self.__location[1])
+            return True
         elif move_key == "d":
             self.__location = (self.__location[0] + 1, self.__location[1])
+            return True
         elif move_key == "r":
             self.__location = (self.__location[0], self.__location[1] + 1)
+            return True
         elif move_key == "l":
             self.__location = (self.__location[0], self.__location[1] - 1)
-        return True
+            return True
+        return False
 
     def get_name(self) -> str:
         """

@@ -11,21 +11,26 @@ TARGET = "E"
 
 class Board:
     """
-    A class responsible for raising rhe framework of the game
+    A class responsible for raising the framework of the game
     """
 
     def __init__(self) -> None:
         """
         A constructor for a Board object.
         """
-        self.__grid = [[0] * WIDTH] * HEIGHT
-        self.__cars = []
+        self.__cars = {}
 
     def __str__(self) -> str:
         """
         This function is called when a board object is to be printed.
         :return: A string representing the current status of the board.
         """
+        grid = []
+        for _ in range(HEIGHT):
+            grid.append([0] * WIDTH)
+        for car in self.__cars.values():
+            for coordinate in car.car_coordinates():
+                grid[coordinate[0]][coordinate[1]] = car.get_name()
         printable = ""
         for row in range(HEIGHT):
             if row != 0:
@@ -33,10 +38,10 @@ class Board:
             for collumn in range(WIDTH):
                 if collumn != 0:
                     printable += " "
-                if self.__grid[row][collumn] == 0:
+                if grid[row][collumn] == 0:
                     printable += "_"
                 else:
-                    printable += self.__grid[row][collumn]
+                    printable += grid[row][collumn]
             if row == int((HEIGHT-1)/2):
                 printable += TARGET
             else:
@@ -54,6 +59,15 @@ class Board:
                 coord_list.append((i,j))
         return coord_list
 
+    def __occupied_locations(self):
+        """
+        checks if a specific required coordinate is vacant
+        """
+        occupied_list = []
+        for car in self.__cars.values():
+            occupied_list += car.car_coordinates()
+        return occupied_list
+
     def possible_moves(self) -> List[Tuple[str, str, str]]:
         """ 
         This function returns the legal moves of all cars in this board.
@@ -62,9 +76,15 @@ class Board:
                  explain what is the movement represented by move_key.
         """
         move_list = []
-        for car in self.__cars:
-            if 
-        pass
+        for car in self.__cars.values():
+            for move, description in car.possible_moves().items():
+                move_satisfies_all_requirements = True
+                for requirement in car.movement_requirements(move):
+                    if requirement in self.__occupied_locations():
+                        move_satisfies_all_requirements = False
+                if move_satisfies_all_requirements:
+                    move_list.append((car.get_name(), move, description))
+        return move_list
 
     def target_location(self) -> Coordinates:
         """
@@ -72,9 +92,7 @@ class Board:
         filled for victory.
         :return: (row, col) of the goal location.
         """
-        # In this board, returns (3,7)
-        # implement your code and erase the "pass"
-        pass
+        return ((HEIGHT-1) / 2, WIDTH)
 
     def cell_content(self, coordinates: Coordinates) -> Optional[str]:
         """
@@ -82,8 +100,13 @@ class Board:
         :param coordinates: tuple of (row, col) of the coordinates to check.
         :return: The name of the car in "coordinates", None if it's empty.
         """
-        # implement your code and erase the "pass"
-        pass
+        for car in self.__cars.values():
+            if coordinates in car.car_coordinates():
+                return car.get_name()
+        return None
+
+    def __coordinate_in_range(self,coordinate: Coordinates) -> bool:
+        return 0 <= coordinate[0] < HEIGHT and 0 <= coordinate[1] < WIDTH
 
     def add_car(self, car: Car) -> bool:
         """
@@ -93,8 +116,12 @@ class Board:
         """
         # Remember to consider all the reasons adding a car can fail.
         # You may assume the car is a legal car object following the API.
-        # implement your code and erase the "pass"
-        pass
+        for coordinate in car.car_coordinates():
+            if not self.__coordinate_in_range(coordinate) or \
+                coordinate in self.__occupied_locations():
+                return False
+        self.__cars[car.get_name()] = car
+        return True
 
     def move_car(self, name: str, move_key: str) -> bool:
         """
@@ -103,9 +130,7 @@ class Board:
         :param move_key: the key of the required move.
         :return: True upon success, False otherwise.
         """
-        # implement your code and erase the "pass"
-        pass
+        if name in self.__cars:
+            return self.__cars[name].move(move_key)
+        return False
 
-if __name__ == "__main__":
-    b = Board()
-    print(b)
