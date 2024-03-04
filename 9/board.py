@@ -11,7 +11,6 @@
 
 from typing import Tuple, List, Optional
 from car import Car
-from colorama import Back
 
 Coordinates = Tuple[int, int]
 
@@ -74,20 +73,26 @@ class Board:
         This function returns the coordinates of cells in this board.
         :return: list of coordinates.
         """
-        coord_list = [(int((HEIGHT-1)/2),WIDTH)]
+        coord_list = [self.target_location()]
         for i in range(HEIGHT):
             for j in range(WIDTH):
                 coord_list.append((i,j))
         return coord_list
 
-    def __occupied_locations(self):
+    def __moves_for_car(self,car: Car) -> List[Tuple[str,str,str]]:
         """
-        checks if a specific required coordinate is vacant
+        finds the viable moves for a car
         """
-        occupied_list = []
-        for car in self.__cars.values():
-            occupied_list += car.car_coordinates()
-        return occupied_list
+        moves = []
+        for move, description in car.possible_moves().items():
+            move_satisfies = True
+            for requirement in car.movement_requirements(move):
+                if self.cell_content(requirement) is not None or \
+                    not self.__coordinate_in_range(requirement):
+                    move_satisfies = False
+            if move_satisfies:
+                moves.append((car.get_name(), move, description))
+        return moves
 
     def possible_moves(self) -> List[Tuple[str, str, str]]:
         """ 
@@ -98,13 +103,7 @@ class Board:
         """
         move_list = []
         for car in self.__cars.values():
-            for move, description in car.possible_moves().items():
-                move_satisfies_all_requirements = True
-                for requirement in car.movement_requirements(move):
-                    if requirement in self.__occupied_locations():
-                        move_satisfies_all_requirements = False
-                if move_satisfies_all_requirements:
-                    move_list.append((car.get_name(), move, description))
+            move_list += self.__moves_for_car(car)
         return move_list
 
     def target_location(self) -> Coordinates:
@@ -113,7 +112,7 @@ class Board:
         filled for victory.
         :return: (row, col) of the goal location.
         """
-        return ((HEIGHT-1) / 2, WIDTH)
+        return (int((HEIGHT-1) / 2), WIDTH)
 
     def cell_content(self, coordinates: Coordinates) -> Optional[str]:
         """
@@ -127,7 +126,7 @@ class Board:
         return None
 
     def __coordinate_in_range(self,coordinate: Coordinates) -> bool:
-        return 0 <= coordinate[0] < HEIGHT and 0 <= coordinate[1] < WIDTH
+        return coordinate in self.cell_list()
 
     def add_car(self, car: Car) -> bool:
         """
@@ -139,7 +138,8 @@ class Board:
         # You may assume the car is a legal car object following the API.
         for coordinate in car.car_coordinates():
             if not self.__coordinate_in_range(coordinate) or \
-                coordinate in self.__occupied_locations():
+                self.cell_content(coordinate) is not None or \
+                    car.get_name() in self.__cars.keys():
                 return False
         self.__cars[car.get_name()] = car
         return True
@@ -153,8 +153,8 @@ class Board:
         """
         if name in self.__cars:
             required = self.__cars[name].movement_requirements(move_key)[0]
-            if ((required[0] in range(HEIGHT) and required[1] in range(WIDTH)) or
+            if ((required[0] in range(HEIGHT) and required[1] in range(WIDTH) and \
+                 self.cell_content(required) is None) or
                 (required[0] == (HEIGHT-1)/2 and required[1] == WIDTH)):
                 return self.__cars[name].move(move_key)
         return False
-

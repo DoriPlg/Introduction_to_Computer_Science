@@ -84,6 +84,10 @@ class Game:
             while not self.__valid_move(user_input):
                 print("invalid move")
                 user_input = self.__get_user_move()
+                if user_input[0] == BREAK_CHAR:
+                    break
+            if user_input[0] == BREAK_CHAR:
+                break
             if not self.__board.move_car(*user_input):
                 print("\nIt seems you're trying to move a car out of bounds. Retry\n")
         if self.__win():
@@ -112,4 +116,4 @@ if __name__== "__main__":
     if len(args) > 1:
         path = args[1]
     Game(json_to_board(path)).play()
-    input("Hit Enter to continue and leave the program")
+    

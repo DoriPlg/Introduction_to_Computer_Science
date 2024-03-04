@@ -98,7 +98,8 @@ class Car:
         :return: True upon success, False otherwise
         """
         if move_key not in self.possible_moves():
-            raise ValueError("This move is not possible, it is not in the possible moves dictionary")
+            return False
+            # raise ValueError("This move is not possible, it is not in the possible moves dictionary")
         if move_key == "u":
             self.__location = (self.__location[0] - 1, self.__location[1])
             return True
