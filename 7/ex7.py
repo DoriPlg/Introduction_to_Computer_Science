@@ -87,27 +87,22 @@ def compare_1d_lists(l1: List[int], l2: List[int]) -> bool:
     """compares the values and place of two 1D lists"""
     if len(l1) == len(l2):
         if len(l1) > 0 and len(l2) > 0:
-            y = l1.pop(-1)
-            x = l2.pop(-1)
-            item = x == y
-            return item and compare_1d_lists(l1,l2)
+            return l1.pop(-1) == l2.pop(-1) and compare_1d_lists(l1,l2)
         return True
     return False
 
 def compare_2d_lists(l1: List[List[int]], l2: List[List[int]]) -> bool:
-    """compares the values and place of two 1D lists"""
+    """compares the values and place of two 2D lists"""
     if len(l1) == len(l2):
         if len(l1) > 0 and len(l2) > 0:
-            item = compare_1d_lists(l1.pop(-1),l2.pop(-1))
-            return item and compare_2d_lists(l1,l2)
+            return compare_1d_lists(l1.pop(-1),l2.pop(-1)) and compare_2d_lists(l1,l2)
         return True
     return False
 
 def magic_list(n: int) -> List[Any]:
     """preforms the magic of a list containing empty lists containing empty lists"""
     if n>0:
-        magic = magic_list(n-1)
-        return magic + [magic]
+        return magic_list(n-1) + [magic_list(n-1)]
     return []
 
 

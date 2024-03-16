@@ -49,18 +49,21 @@ def test_lists():
                             [[1,2,3,4,5],[2,4,12,5],[42,3,1]])
     assert compare_1d_lists([],[])
     assert compare_2d_lists([],[])
+    assert compare_2d_lists([[]],[[]])
+    assert compare_2d_lists([[],[]],[[],[]])
+    assert compare_2d_lists([[],[1]],[[],[1]])
+    assert not compare_2d_lists([[],[1]],[[],[2]])
+    assert not compare_2d_lists([[],[]],[[]])
     assert not compare_2d_lists([],[[]])
+    assert compare_2d_lists([[], [1], [2, 3], [4, 5, 6], [7, 8], [9], []],[[], [1], [2, 3], [4, 5, 6], [7, 8], [9], []])
 
 def test_magic():
-    assert magic_list(0) == []
+    magic_0 = magic_list(0)
+    lst = []
+    assert magic_0 == []
     assert magic_list(1) == [[]]
     assert magic_list(2) == [[],[[]]]
-    assert magic_list(3) == [[],
-                             [[]],
-                             [[],[[]]]
-                             ]
-    assert magic_list(4) == [[],
-                             [[]],
-                             [[],[[]]],
-                             [[],[[]],[[],[[]]]]
-                             ]
+    assert magic_list(3) == [[],[[]],[[],[[]]]]
+    for i in range(1,10):
+        lst = [l for l in lst]+[lst]
+        assert magic_list(i) == lst
